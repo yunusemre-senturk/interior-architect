@@ -1,0 +1,7 @@
+# Personal design data never goes into this repo.
+house-rules.md
+design-log.md
+/survey-*.md
+.interior-architect/
+*.private.md
+.DS_Store

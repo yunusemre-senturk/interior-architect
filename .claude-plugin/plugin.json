@@ -1,0 +1,13 @@
+{
+  "name": "interior-architect",
+  "version": "0.2.0",
+  "description": "A senior interior-architect partner for home design and renovation: interviews how you live, surveys before drawing, generates 2-3 inventive concepts, and checks every detail through six lenses (use, ergonomics, aesthetics, systems & safety, light, wellbeing) and local rules.",
+  "author": {
+    "name": "yunusemre-senturk",
+    "url": "https://github.com/yunusemre-senturk"
+  },
+  "homepage": "https://github.com/yunusemre-senturk/interior-architect",
+  "repository": "https://github.com/yunusemre-senturk/interior-architect",
+  "license": "MIT AND CC-BY-4.0",
+  "keywords": ["interior-design", "interior-architecture", "iç-mimari", "kitchen", "bathroom", "renovation", "ergonomics", "lighting", "biophilic-design", "home", "agent-skill"]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "interior-architect",
+  "owner": {
+    "name": "yunusemre-senturk",
+    "url": "https://github.com/yunusemre-senturk"
+  },
+  "metadata": {
+    "description": "Senior interior-architect skill, agents and commands for Claude: home design, kitchens, bathrooms, storage, lighting, wellbeing, budgets.",
+    "version": "0.2.0"
+  },
+  "plugins": [
+    {
+      "name": "interior-architect",
+      "source": "./",
+      "description": "A senior interior-architect partner for home design and renovation.",
+      "version": "0.2.0",
+      "category": "design"
+    }
+  ]
+}

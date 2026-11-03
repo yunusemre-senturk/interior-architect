@@ -1,0 +1,60 @@
+<!-- Interior-architect configurator template: tall cabinet elevation vs. users' bodies.
+     Works standalone in a browser and as an inline widget. Adapt inputs and drawing to the decision at hand.
+     Language: ?lang=tr or ?lang=en (default: browser language). Numbers marked G are rules of thumb. -->
+<div id="ia-cfg" style="font-family:var(--font-sans,system-ui,sans-serif);color:var(--color-text-primary,#222);max-width:760px">
+<style>
+#ia-cfg .row{display:flex;gap:20px;flex-wrap:wrap}
+#ia-cfg .ctl{flex:1 1 260px;min-width:240px}
+#ia-cfg label{display:flex;justify-content:space-between;font-size:13px;margin-top:8px}
+#ia-cfg input[type=range]{width:100%}
+#ia-cfg .out{font-size:13px;line-height:1.5;margin-top:10px}
+#ia-cfg .warn{color:#b3261e}
+#ia-cfg .ok{color:#1b6e3a}
+#ia-cfg button{margin-top:12px;padding:8px 14px;border-radius:8px;border:1px solid var(--color-border-secondary,#999);background:transparent;color:inherit;cursor:pointer}
+#ia-cfg svg text{font-size:10px;fill:var(--color-text-secondary,#555)}
+</style>
+<div class="row">
+  <div class="ctl" id="ctls"></div>
+  <svg id="elev" viewBox="0 0 260 300" style="flex:1 1 260px;max-height:420px"></svg>
+</div>
+<div class="out" id="out"></div>
+<button id="send"></button>
+</div>
+<script>
+(function(){
+const lang=(new URLSearchParams(location.search).get('lang')||navigator.language||'en').slice(0,2)==='tr'?'tr':'en';
+const T={en:{ceiling:'Net ceiling',plinth:'Plinth',gap:'Top gap',tall:'Tallest user',short:'Shortest user',reach:'Reach factor (G)',hall:'Hall width',leaf:'Widest door leaf',
+ zones:'Zones',active:'active zone',season:'seasonal band (stool)',passage:'Passage with widest door open',shoulder:'shoulder',eye:'eye',
+ head:'Check head clearance: door edges above',send:'Update the plan with these settings',tight:'tight',okp:'ok',bad:'too narrow'},
+ tr:{ceiling:'Net tavan',plinth:'Kaide',gap:'Tavan payı',tall:'En uzun kullanıcı',short:'En kısa kullanıcı',reach:'Erişim katsayısı (G)',hall:'Hol genişliği',leaf:'En geniş kapak',
+ zones:'Bölgeler',active:'aktif bölge',season:'mevsimlik bant (tabure)',passage:'En geniş kapak açıkken geçiş',shoulder:'omuz',eye:'göz',
+ head:'Kafa payını kontrol et: kapak kenarı şu yüksekliğin üstünde',send:'Bu ayarla planı güncelle',tight:'dar',okp:'iyi',bad:'çok dar'}}[lang];
+const P={ceiling:[200,300,240,1],plinth:[0,15,10,1],gap:[0,5,2,0.5],tall:[140,210,180,1],short:[120,200,165,1],reach:[1.0,1.2,1.08,0.01],hall:[70,200,120,1],leaf:[30,70,50,1]};
+const v={};const ctls=document.getElementById('ctls');
+for(const k in P){const [mn,mx,df,st]=P[k];v[k]=df;
+ const l=document.createElement('label');l.innerHTML=`<span>${T[k]}</span><b id="v_${k}">${df}</b>`;
+ const i=document.createElement('input');i.type='range';i.min=mn;i.max=mx;i.step=st;i.value=df;
+ i.oninput=()=>{v[k]=+i.value;document.getElementById('v_'+k).textContent=i.value;draw()};ctls.append(l,i);}
+const svg=document.getElementById('elev');
+function draw(){
+ const top=v.ceiling-v.gap, reach=Math.min(Math.round(v.short*v.reach),top), H=300, s=(H-20)/v.ceiling, y=h=>H-10-h*s;
+ const bands=[[0,v.plinth,'#bbb',''],[v.plinth,reach,'#cfe3d4',T.active],[reach,top,'#f3dcc0',T.season]];
+ let g=`<line x1="20" x2="240" y1="${y(v.ceiling)}" y2="${y(v.ceiling)}" stroke="#888" stroke-dasharray="3 3"/><text x="20" y="${y(v.ceiling)-3}">${T.ceiling} ${v.ceiling}</text>`;
+ for(const [a,b,c,n] of bands){if(b<=a)continue;g+=`<rect x="20" y="${y(b)}" width="150" height="${(b-a)*s}" fill="${c}" stroke="#666"/>`;if(n)g+=`<text x="24" y="${y(b)+12}">${n}</text><text x="24" y="${y(b)+24}">${a}–${b}</text>`;}
+ for(const [st,c] of [[v.tall,'#345'],[v.short,'#a35']]){const x=st===v.tall?185:215;
+  g+=`<line x1="${x}" x2="${x}" y1="${y(0)}" y2="${y(st)}" stroke="${c}" stroke-width="3"/><circle cx="${x}" cy="${y(st)}" r="4" fill="${c}"/>`;
+  g+=`<line x1="${x-8}" x2="${x+8}" y1="${y(st*0.82)}" y2="${y(st*0.82)}" stroke="${c}"/><text x="${x-14}" y="${y(st)-6}">${st}</text>`;}
+ svg.innerHTML=g;
+ const pass=v.hall-v.leaf, ps=pass>=80?['ok',T.okp]:pass>=70?['warn',T.tight]:['warn',T.bad];
+ document.getElementById('out').innerHTML=
+  `<b>${T.zones}:</b> ${T.plinth.toLowerCase()} 0–${v.plinth} · ${T.active} ${v.plinth}–${reach} · ${T.season} ${reach}–${top}<br>`+
+  `${T.tall}: ${T.shoulder} ≈ ${Math.round(v.tall*0.82)}, ${T.eye} ≈ ${Math.round(v.tall*0.93)} · ${T.short}: ${T.shoulder} ≈ ${Math.round(v.short*0.82)}, ${T.eye} ≈ ${Math.round(v.short*0.93)}<br>`+
+  (top>v.tall+5?`<span class="warn">⚠ ${T.head} ${v.tall+5} cm</span><br>`:'')+
+  `${T.passage}: <span class="${ps[0]}">${pass} cm (${ps[1]})</span>`;
+}
+const b=document.getElementById('send');b.textContent=T.send;
+b.onclick=()=>{const msg=`${T.send}: `+Object.entries(v).map(([k,x])=>`${T[k]}=${x}`).join(', ');
+ if(typeof sendPrompt==='function')sendPrompt(msg);else{navigator.clipboard&&navigator.clipboard.writeText(msg);b.textContent='✓ copied';}};
+draw();
+})();
+</script>
