@@ -40,15 +40,33 @@ and checks every idea — down to the light switch behind the door — before an
 
 ## 🚀 Install
 
-**Claude Code (plugin — recommended)**
+**Claude Code (plugin — recommended)** — type these in the Claude Code prompt (they are slash commands, not shell commands):
 
-```bash
+```text
 /plugin marketplace add yunusemre-senturk/interior-architect
-```
-
-```bash
 /plugin install interior-architect@interior-architect
 ```
+
+From a shell, the same with the `claude` CLI:
+
+```bash
+claude plugin marketplace add yunusemre-senturk/interior-architect && claude plugin install interior-architect@interior-architect
+```
+
+<details>
+<summary>Or add it to <code>~/.claude/settings.json</code> (installs on the next session)</summary>
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "interior-architect": {
+      "source": { "source": "github", "repo": "yunusemre-senturk/interior-architect" }
+    }
+  },
+  "enabledPlugins": { "interior-architect@interior-architect": true }
+}
+```
+</details>
 
 **Claude Code (skill only)** — copy `skills/interior-architect/` to `~/.claude/skills/` (personal) or `.claude/skills/` (project).
 

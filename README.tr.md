@@ -40,15 +40,33 @@ ve her fikri — kapının arkasında kalan lamba anahtarına kadar — uygulanm
 
 ## 🚀 Kurulum
 
-**Claude Code (plugin — önerilen)**
+**Claude Code (plugin — önerilen)** — bunları Claude Code'un sohbet kutusuna yaz (bunlar slash komutu, terminal komutu değil):
 
-```bash
+```text
 /plugin marketplace add yunusemre-senturk/interior-architect
-```
-
-```bash
 /plugin install interior-architect@interior-architect
 ```
+
+Terminalden, `claude` CLI ile aynısı:
+
+```bash
+claude plugin marketplace add yunusemre-senturk/interior-architect && claude plugin install interior-architect@interior-architect
+```
+
+<details>
+<summary>Ya da <code>~/.claude/settings.json</code> dosyasına ekle (sonraki oturumda kurulur)</summary>
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "interior-architect": {
+      "source": { "source": "github", "repo": "yunusemre-senturk/interior-architect" }
+    }
+  },
+  "enabledPlugins": { "interior-architect@interior-architect": true }
+}
+```
+</details>
 
 **Claude Code (yalnız skill)** — `skills/interior-architect/` klasörünü `~/.claude/skills/` (kişisel) ya da `.claude/skills/` (proje) altına kopyala.
 
