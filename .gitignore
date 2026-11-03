@@ -5,3 +5,4 @@ design-log.md
 .interior-architect/
 *.private.md
 .DS_Store
+dist/
